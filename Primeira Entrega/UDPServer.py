@@ -26,3 +26,11 @@ while True:
     # Abaixo devemos implementadar a lógica de 
     # reconstrução, armazenamento e devolução 
     # do arquivo para o cliente
+
+    # TESTE DE COMUNICAÇÃO FUNCIONANDO #
+    modifiedMessage = message.decode()
+    print("client_ " + modifiedMessage)
+
+    response = "Quero não"
+    print("server_ " + response)
+    serverSocket.sendto(response.encode(), clientAddress)
