@@ -29,7 +29,7 @@ clientSocket.sendto(message.encode(),(serverName, int(serverPort)))
 print("client_ " + message)
 
 # Cliente recebe uma resposta do servidor
-encodedModified, serverAddress = clientSocket.recvfrom(2048)
+encodedModified = clientSocket.recv(2048)
 
 modifiedMessage = encodedModified.decode()
 print("server_ " + modifiedMessage)
