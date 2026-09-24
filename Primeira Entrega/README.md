@@ -8,9 +8,23 @@ O código de comunicação via socket UDP foi adaptado a partir desse material d
 
 ## Instruções de Execução
 
+1. Em um terminal, inicie o servidor:
+```bash
+   python3 UDPServer.py
+```
+2. Em outro terminal, execute o cliente:
+```bash
+   python3 UDPClient.py
+```
+
 ## Objetivos e como concluímos cada um
 
 ### Implementar comunicação Socket:
+
+- Criados os sockets UDP (`AF_INET`, `SOCK_DGRAM`) tanto no cliente quanto no servidor. 
+- O servidor faz `bind` na porta 12000 e fica em loop aguardando pacotes com `recvfrom`. 
+- O cliente envia mensagens com `sendto` e aguarda resposta com `recvfrom`, com timeout configurado para evitar espera indefinida. 
+- A comunicação entre os dois foi validada com um teste simples de troca de mensagens.
 
 ### Gerenciar fragmentação de dados:
 
