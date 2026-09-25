@@ -6,33 +6,36 @@
 #
 
 from socket import *
+import funcoes
 
 # Cria socket UDP
 serverName = "localhost"
 serverPort = 12000
 clientSocket = socket(AF_INET, SOCK_DGRAM)
 clientSocket.settimeout(10)
-
 ## ACIMA já temos o socket UDP do cliente implementado ##
 
 ## ABAIXO temos um teste de comunicação ##
 
 # Posteriormente implementaremos a lógica de 
-# reconstrução e armazenamento 
+# reconstrução e armazenamento  
 # do arquivo recebido do servidor
 
 # Mensagem
-message = "Quer hamburguer?"
+tamanho_chunk = 1024
+
+
 
 # Enviando a mensagem e aguardando a resposta
-clientSocket.sendto(message.encode(),(serverName, int(serverPort)))
-print("client_ " + message)
+nome = input("fale o nome do arquivo que você quer enviar: ")
 
-# Cliente recebe uma resposta do servidor
-encodedModified = clientSocket.recv(2048)
+clientSocket.sendto(nome.encode(),(serverName, int(serverPort)))
+funcoes.enviar("arquivos/" + nome, (serverName, int(serverPort)), clientSocket)
+Address = funcoes.baixar("arquivos/" + "cliente_" + nome, clientSocket)
 
-modifiedMessage = encodedModified.decode()
-print("server_ " + modifiedMessage)
+
+#modifiedMessage = encodedModified.decode()
+#print("server_ " + modifiedMessage)
 print("client_ Compreensível. Tenha um bom dia!")
 clientSocket.close()
 print("client_ Conexão fechada.")
