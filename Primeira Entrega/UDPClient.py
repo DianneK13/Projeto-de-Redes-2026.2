@@ -1,41 +1,36 @@
-#
-#  UDPClient.py
-#  Primeira Entrega
-#
-#  Created by Maria Clara Rodrigues de Almeida on 23/09/26.
-#
-
 from socket import *
-import funcoes
+from funcoes import *
+
+#lista de arquivos existentes
+arquivos = ['faroeste.txt', 'Megadeth.mp3', 'voce.png', 'zero.png'] 
 
 # Cria socket UDP
 serverName = "localhost"
 serverPort = 12000
 clientSocket = socket(AF_INET, SOCK_DGRAM)
 clientSocket.settimeout(10)
-## ACIMA já temos o socket UDP do cliente implementado ##
 
-## ABAIXO temos um teste de comunicação ##
-
-# Posteriormente implementaremos a lógica de 
-# reconstrução e armazenamento  
-# do arquivo recebido do servidor
-
-# Mensagem
-tamanho_chunk = 1024
-
-
-
-# Enviando a mensagem e aguardando a resposta
+#usuário decide qual arquivo enviar
+print("arquivos:")
+for i in arquivos:
+  print(f'\t{i}')
 nome = input("fale o nome do arquivo que você quer enviar: ")
 
+#caso usuário digite um arquivo que não existe
+while nome not in arquivos:
+  print(f'arquivo {nome} não existe.')
+  print("arquivos:")
+  for i in arquivos:
+    print(f'\t{i}')
+  nome = input("fale o nome do arquivo que você quer enviar: ")
+
+# cliente enviando a mensagem e aguardando a resposta do servidor
 clientSocket.sendto(nome.encode(),(serverName, int(serverPort)))
-funcoes.enviar("arquivos/" + nome, (serverName, int(serverPort)), clientSocket)
-Address = funcoes.baixar("arquivos/" + "cliente_" + nome, clientSocket)
+enviar("arquivos/memória cliente/" + nome, (serverName, int(serverPort)), clientSocket)
+print("(cliente) enviou arquivo para o servidor.")
+Address = baixar("arquivos/memória cliente/" + "cliente_" + nome, clientSocket)
+print("(cliente) recebeu o arquivo de resposta do servidor")
 
-
-#modifiedMessage = encodedModified.decode()
-#print("server_ " + modifiedMessage)
-print("client_ Compreensível. Tenha um bom dia!")
+print("(cliente) Compreensível. Tenha um bom dia!")
 clientSocket.close()
-print("client_ Conexão fechada.")
+print("(cliente) Conexão fechada.")
