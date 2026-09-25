@@ -26,9 +26,9 @@ while nome not in arquivos:
 
 # cliente enviando a mensagem e aguardando a resposta do servidor
 clientSocket.sendto(nome.encode(),(serverName, int(serverPort)))
-enviar("arquivos/memória cliente/" + nome, (serverName, int(serverPort)), clientSocket)
+enviar("arquivos/ClientMemory/" + nome, (serverName, int(serverPort)), clientSocket)
 print("(cliente) enviou arquivo para o servidor.")
-Address = baixar("arquivos/memória cliente/" + "cliente_" + nome, clientSocket)
+Address = baixar("arquivos/ClientMemory/" + "cliente_" + nome, clientSocket)
 print("(cliente) recebeu o arquivo de resposta do servidor")
 
 print("(cliente) Compreensível. Tenha um bom dia!")

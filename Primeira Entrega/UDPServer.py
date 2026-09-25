@@ -17,7 +17,7 @@ while True:
     if nome:
         print(f"(servidor) arquivo {nome} recebido")
         tipo = definir_arquivo_nome(nome.decode())
-        download = "arquivos/memória servidor/" + "servidor_" + nome.decode()
+        download = "arquivos/ServerMemory/" + "servidor_" + nome.decode()
         baixar(download, serverSocket)
         print("(servidor) armazenou o arquivo recebido.")
         enviar(download, clientAddress, serverSocket)
