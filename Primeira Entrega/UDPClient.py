@@ -6,6 +6,7 @@
 #
 
 from socket import *
+import funcoes
 
 # Cria socket UDP
 serverName = "localhost"
@@ -21,34 +22,15 @@ clientSocket.settimeout(10)
 # do arquivo recebido do servidor
 
 # Mensagem
-message = "Quer hamburguer?"
 tamanho_chunk = 1024
 
 
 
 # Enviando a mensagem e aguardando a resposta
 
-with open("arquivo.txt", 'rb') as arquivo: #abro o arquivo da mensagem que vai ser transmitida
-    while True: 
-        data = arquivo.read(tamanho_chunk) #leio até o tamanho bater o 1024 bytes
-        if not data:
-            break
-        clientSocket.sendto(data, (serverName, int(serverPort)))
-    clientSocket.sendto(b"", (serverName, int(serverPort))) #pacote vazio para reconhecer o fim da transmissão
+funcoes.enviar("arquivos/arquivo.txt", (serverName, int(serverPort)), clientSocket)
 
-# Cliente recebe uma resposta do servidor
-
-    with open("cliente_recebe.txt", 'ab') as output: # abro o arquivo que recebe a mensagem que volta do servidor
-        while True:
-            encodedModified = clientSocket.recv(2048) 
-            # Por que bufsize = 2048? # 
-            # Já que os pacotes que o servidor vai
-            # receber têm 1024 bytes, melhor garantir
-            # com o dobro para não perder nada(BUF_SIZE)
-            if not encodedModified: #recebe um pacote vazio, que representa o fim da mensagem
-                break
-            print("segmentou\n")
-            output.write(encodedModified) # escrevo o pacote recebido do servidor no arquivo
+Address = funcoes.baixar("arquivos/cliente_recebe.txt", clientSocket)
 
 
 #modifiedMessage = encodedModified.decode()

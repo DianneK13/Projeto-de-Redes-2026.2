@@ -6,7 +6,7 @@
 #
 
 from socket import *
-
+import funcoes
 # Cria socket UDP
 serverPort = 12000
 serverSocket = socket(AF_INET, SOCK_DGRAM)
@@ -20,24 +20,27 @@ print("O servidor está a postos! Pronto para receber!")
 while True:
     # Recebe o pacote do cliente junto com o endereço 
     # de onde ele está vindo.
-    with open("download.txt", 'ab') as output: #abro o arquivo que vai salvar a mensagem transmitida pelo servidor
-        while True:
-            message, clientAddress = serverSocket.recvfrom(2048) # Por que bufsize = 2048? # 
-                                                                 # Já que os pacotes que o servidor vai
-                                                                 # receber têm 1024 bytes, melhor garantir
-                                                                 # com o dobro para não perder nada(BUF_SIZE)
-            if not message: #recebe o pacote vazio
-                break
-            print("Segmentou\n")
+    
+    clientAddress = funcoes.baixar("arquivos/download.txt", serverSocket)
+    
+    '''
+    message, clientAddress = serverSocket.recvfrom(tamanho_chunk)
+    if message:
+        count = 1
+        with open("arquivos/download.txt", 'wb') as output: #abro o arquivo que vai salvar a mensagem transmitida pelo servidor
             output.write(message)
-
-    with open("arquivo.txt", 'rb') as arquivo: #mesma lógica da parte do cliente para enviar
-        while True:
-            data = arquivo.read(tamanho_chunk)
-            if not data:
-                break
-            serverSocket.sendto(data, clientAddress)
-        serverSocket.sendto(b"", clientAddress)
+            while True:
+                message, clientAddress = serverSocket.recvfrom(tamanho_chunk) # Por que bufsize = 2048? # 
+                                                                    # Já que os pacotes que o servidor vai
+                                                                    # receber têm 1024 bytes, melhor garantir
+                                                                    # com o dobro para não perder nada(BUF_SIZE)
+                if not message: #recebe o pacote vazio
+                    break
+                count = count+1
+                output.write(message)
+        print("segmentou",count)
+    '''
+    funcoes.enviar("arquivos/download.txt", clientAddress, serverSocket)
 
     # Abaixo devemos implementadar a lógica de 
     # reconstrução, armazenamento e devolução 
