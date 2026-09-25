@@ -15,10 +15,10 @@ while True:
     # de onde ele está vindo.
     nome, clientAddress = serverSocket.recvfrom(tamanho_chunk)
     if nome:
+        print(f"(servidor) arquivo {nome} recebido")
         tipo = definir_arquivo_nome(nome.decode())
-        download = "arquivos/" + "servidor_" + nome.decode()
+        download = "arquivos/memória servidor/" + "servidor_" + nome.decode()
         baixar(download, serverSocket)
-        print("server_mensagem recebida" )
         print("(servidor) armazenou o arquivo recebido.")
         enviar(download, clientAddress, serverSocket)
         print("(servidor) enviou o arquivo de volta.")

@@ -17,15 +17,12 @@ def baixar(arquivo, socket):
         with open(arquivo, 'wb') as output: #abro o arquivo que vai salvar a mensagem transmitida pelo servidor
             output.write(message)
             while True:
-                message, clientAddress = socket.recvfrom(tamanho_chunk) # Por que bufsize = 2048? # 
-                                                                    # Já que os pacotes que o servidor vai
-                                                                    # receber têm 1024 bytes, melhor garantir
-                                                                    # com o dobro para não perder nada(BUF_SIZE)
+                message, clientAddress = socket.recvfrom(tamanho_chunk) 
                 if not message: #recebe o pacote vazio
                     break
                 count = count+1
                 output.write(message)
-        print("segmentou",count)
+        print(f"arquivo foi segmentado {count} vezes")
         return clientAddress
 
 def definir_arquivo(tipo):
