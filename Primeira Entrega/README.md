@@ -13,7 +13,7 @@ O código de comunicação via socket UDP foi adaptado a partir desse material d
    cd Primeira\ Entrega
 ```
 
-2. Em um terminal, inicie o servidor:
+1. Em um terminal, inicie o servidor:
 ```bash
    python3 UDPServer.py
 ```
