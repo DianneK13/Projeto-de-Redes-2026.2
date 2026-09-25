@@ -13,6 +13,7 @@ serverSocket = socket(AF_INET, SOCK_DGRAM)
 # Atribui endereço IP e número de porta ao socket
 serverSocket.bind(('', serverPort))
 tamanho_chunk = 1024
+num_arquivo = 0
 
 
 print("O servidor está a postos! Pronto para receber!")
@@ -20,27 +21,13 @@ print("O servidor está a postos! Pronto para receber!")
 while True:
     # Recebe o pacote do cliente junto com o endereço 
     # de onde ele está vindo.
-    
-    clientAddress = funcoes.baixar("arquivos/download.txt", serverSocket)
-    
-    '''
-    message, clientAddress = serverSocket.recvfrom(tamanho_chunk)
-    if message:
-        count = 1
-        with open("arquivos/download.txt", 'wb') as output: #abro o arquivo que vai salvar a mensagem transmitida pelo servidor
-            output.write(message)
-            while True:
-                message, clientAddress = serverSocket.recvfrom(tamanho_chunk) # Por que bufsize = 2048? # 
-                                                                    # Já que os pacotes que o servidor vai
-                                                                    # receber têm 1024 bytes, melhor garantir
-                                                                    # com o dobro para não perder nada(BUF_SIZE)
-                if not message: #recebe o pacote vazio
-                    break
-                count = count+1
-                output.write(message)
-        print("segmentou",count)
-    '''
-    funcoes.enviar("arquivos/download.txt", clientAddress, serverSocket)
+    nome, clientAddress = serverSocket.recvfrom(tamanho_chunk)
+    if nome:
+        tipo = funcoes.definir_arquivo_nome(nome.decode())
+        download = "arquivos/" + "servidor_" + nome.decode()
+        funcoes.baixar(download, serverSocket)
+        funcoes.enviar(download, clientAddress, serverSocket)
+        num_arquivo = num_arquivo + 1
 
     # Abaixo devemos implementadar a lógica de 
     # reconstrução, armazenamento e devolução 

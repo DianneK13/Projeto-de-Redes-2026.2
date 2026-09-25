@@ -27,10 +27,11 @@ tamanho_chunk = 1024
 
 
 # Enviando a mensagem e aguardando a resposta
+nome = input("fale o nome do arquivo que você quer enviar: ")
 
-funcoes.enviar("arquivos/arquivo.txt", (serverName, int(serverPort)), clientSocket)
-
-Address = funcoes.baixar("arquivos/cliente_recebe.txt", clientSocket)
+clientSocket.sendto(nome.encode(),(serverName, int(serverPort)))
+funcoes.enviar("arquivos/" + nome, (serverName, int(serverPort)), clientSocket)
+Address = funcoes.baixar("arquivos/" + "cliente_" + nome, clientSocket)
 
 
 #modifiedMessage = encodedModified.decode()

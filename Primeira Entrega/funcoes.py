@@ -27,3 +27,13 @@ def baixar(arquivo, socket):
                 output.write(message)
         print("segmentou",count)
         return clientAddress
+
+def definir_arquivo(tipo):
+    if tipo == "txt":
+        return ".txt"
+    if tipo == "png":
+        return ".png"
+
+def definir_arquivo_nome(nome):
+    arquivo = nome.split(".")
+    return arquivo[-1]
