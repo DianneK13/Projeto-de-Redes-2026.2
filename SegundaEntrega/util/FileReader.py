@@ -1,4 +1,4 @@
-class FileReader:
+class FileReader: #le arquivo de dado local
     def __init__(self, file_path, blockSize=1024):
         self.index = 0
         self.blockSize = blockSize
@@ -7,6 +7,9 @@ class FileReader:
         self.file.seek(0)
 
     def read_buffer(self):
+        #"cursor" que começa no início do arquivo
+        #vai avançando conforme o blocksize 
+        #retorna os dados daquele segmento
         if self.index >= self.file_size:
             return None
 

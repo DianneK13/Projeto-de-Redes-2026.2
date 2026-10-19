@@ -5,37 +5,36 @@ from util.FileReader import *
 from util.FileWriter import *
 
 class FTServer:
-    def __init__(self, serverPort):
-        self.rdtServer = RDTServer(serverPort)
+    #arquivos FT (file transfer) são responsáveis pela leitura/escrita e segmentação de arquivos
+    #os segmentos que FTServer faz são enviados para RDTServer
 
-    def receiveFile (self, path):
-        # Recebe o pacote do cliente junto com o endereço 
-        # de onde ele está vindo.
-        #nome, clientAddress = self.serverSocket.recvfrom(Util.tamanho_chunk)
+    def __init__(self, serverPort):
+        self.rdtServer = RDTServer(serverPort) #instância de RDTServer
+
+    def receiveFile (self, path): #receber arquivos do RDTServer
         nome, clientAddress = self.rdtServer.receiveBuffer()
 
         if nome:
             print(f"(servidor) arquivo {nome} recebido")
-            #tipo  = Util.definir_arquivo_nome(nome.decode())
-            download = path + nome.decode()
-            fileWriter = FileWriter(download)
+            
+            download = path + nome.decode() #transforma de volta em txt
+            fileWriter = FileWriter(download) #abre arquivo pra escrever ele localmente
 
-            #Util.baixar(download, self.serverSocket)
             buffer, clientAddress = self.rdtServer.receiveBuffer()
             while buffer:
                 fileWriter.write_buffer(buffer)
-                buffer, clientAddress = self.rdtServer.receiveBuffer()
+                buffer, clientAddress = self.rdtServer.receiveBuffer() #recebe buffer do rdtServer
 
             print("(servidor) armazenou o arquivo recebido.")
             return download, clientAddress
 
-    def sendFile(self, fileName, clientAddress):
-        #Util.enviar(fileName, clientAddress, self.serverSocket)
-        fileReader = FileReader(fileName, self.rdtServer.payload())
+    def sendFile(self, fileName, clientAddress): #enviar arquivo pro RDTServer
+        fileReader = FileReader(fileName, self.rdtServer.payload()) #instância do FileReader
 
+        #lê arquivo (em segmentos) q vai mandar
         buffer = fileReader.read_buffer()
         while buffer is not None:
-            self.rdtServer.sendBuffer(buffer, clientAddress)
+            self.rdtServer.sendBuffer(buffer, clientAddress) #manda buffer com os dados pro rdtServer
             buffer = fileReader.read_buffer()
         
         self.rdtServer.sendBuffer(b"", clientAddress) # sinaliza fim de arquivo com pacote vazio
@@ -56,7 +55,7 @@ def main():
         nome, clientAddress = ftServer.receiveFile(local)
 
         if nome:
-            ftServer.sendFile(nome, clientAddress)
+            ftServer.sendFile(nome, clientAddress) #retorna arquivo pro cliente
             num_arquivo = num_arquivo + 1   
 
 if __name__ == "__main__":

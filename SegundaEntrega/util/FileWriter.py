@@ -1,6 +1,5 @@
-class FileWriter:
-    def __init__(self, file_path):
-        #self.file_size = 0
+class FileWriter: #escreve arquivo em dado local
+    def __init__(self, file_path): 
         self.file = open(file_path, "wb")
 
     def write_buffer(self, buff, size=-1):
@@ -8,7 +7,6 @@ class FileWriter:
             size = len(buff)
 
         written = self.file.write(buff[:size])
-        #self.file_size += written
 
     def close(self):
         self.file.close()
