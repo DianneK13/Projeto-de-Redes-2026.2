@@ -1,39 +1,35 @@
 class FSM_Receptor:
-  def __init__(self):
+  def __init__(self, rdt):
+    self.rdt = rdt #RDTSocket usado para enviar os ACKs
     self.estados = {
       "estado_espera_0_baixo": self.estado_espera_0_baixo,
       "estado_espera_1_baixo": self.estado_espera_1_baixo
     }
     self.estado_atual = "estado_espera_0_baixo"
 
-  def transicao(self, evento):
-    if evento in ["recebeu_0_corretamente",
-                  "recebeu_1_corretamente",
-                  "corrompido_ou_0_errado",  #estava esperando 1, veio 0
-                  "corrompido_ou_1_errado"   #estava esperando 0, veio 1
+  def transicao(self, evento, pacote=None):
+    if evento in ["recebeu_seq0",        #pacote íntegro com seq 0
+                  "recebeu_seq1",        #pacote íntegro com seq 1
+                  "recebeu_corrompido"
                   ]: 
-      self.estado_atual = self.estados[self.estado_atual](evento)
+      self.estado_atual = self.estados[self.estado_atual](evento, pacote)
     else:
       print(f"evento inválido: {evento}")
 
-  def estado_espera_0_baixo(self, evento):
-    if evento == "recebeu_0_corretamente":
-      #CÓDIGO AQUI
-      self.estado_atual = "estado_espera_1_baixo"
+  def estado_espera_0_baixo(self, evento, pacote):
+    if evento == "recebeu_seq0":
+      #CÓDIGO AQUI: extract(pacote), deliver_data, make_pkt(ACK, 0, checksum), udt_send
+      return "estado_espera_1_baixo"
 
-    elif evento == "corrompido_ou_1_errado":
-      #CÓDIGO AQUI
-      self.estado_atual = "estado_espera_0_baixo"
+    #corrompido ou seq 1:
+    #CÓDIGO AQUI: make_pkt(ACK, 1, checksum), udt_send
+    return "estado_espera_0_baixo"
 
-    return self.estado_atual
+  def estado_espera_1_baixo(self, evento, pacote):
+    if evento == "recebeu_seq1":
+      #CÓDIGO AQUI: extract(pacote), deliver_data, make_pkt(ACK, 1, checksum), udt_send
+      return "estado_espera_0_baixo"
 
-  def estado_espera_1_baixo(self, evento):
-    if evento == "recebeu_1_corretamente":
-      #CÓDIGO AQUI
-      self.estado_atual = "estado_espera_0_baixo"
-
-    elif evento == "corrompido_ou_0_errado":
-      #CÓDIGO AQUI
-      self.estado_atual = "estado_espera_1_baixo"
-
-    return self.estado_atual
+    #corrompido ou seq 0:
+    #CÓDIGO AQUI: make_pkt(ACK, 0, checksum), udt_send
+    return "estado_espera_1_baixo"

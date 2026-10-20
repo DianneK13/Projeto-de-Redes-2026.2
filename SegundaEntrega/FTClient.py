@@ -16,7 +16,7 @@ class FTClient:
     encodedFileName = fileName.encode() #transformar nome do arquivo (txt) em bytes pra poder enviar
 
     #1. enviando nome do arquivo
-    self.rdtClient.sendBuffer(encodedFileName)
+    self.rdtClient.rdtSend(encodedFileName)
 
     #2. enviando conteúdo do arquivo
     fileReader = FileReader(folder + fileName, self.rdtClient.payload()) #instância do FileReader para ler o arquivo local q vai enviar
@@ -24,20 +24,20 @@ class FTClient:
     #lê o arquivo em segmentos (tamanho do bloco definido pela função payload())
     buffer = fileReader.read_buffer() 
     while buffer is not None:
-      self.rdtClient.sendBuffer(buffer) #manda buffer pro rdtClient
+      self.rdtClient.rdtSend(buffer) #manda buffer pro rdtClient
       buffer = fileReader.read_buffer()
     
-    self.rdtClient.sendBuffer(b"") #sinaliza fim de arquivo com pacote vazio
+    self.rdtClient.rdtSend(b"") #sinaliza fim de arquivo com pacote vazio
 
   def receiveFile(self, fileName): #receber arquivos do RDTClient
     fileWriter = FileWriter(fileName) #instância do FileWriter para escrever o arquivo q chegou
 
     count = 1
-    buffer = self.rdtClient.receiveBuffer() #vai recebendo o buffer e contando pra saber quantas vezes segmentou
+    buffer = self.rdtClient.rdtReceive() #vai recebendo o buffer e contando pra saber quantas vezes segmentou
     while buffer:
       fileWriter.write_buffer(buffer)
       count += 1
-      buffer = self.rdtClient.receiveBuffer()
+      buffer = self.rdtClient.rdtReceive()
     print(f"arquivo foi segmentado {count} vezes")
 
   def close(self):

@@ -1,5 +1,6 @@
 class FSM_Transmissor:
-  def __init__(self):
+  def __init__(self, rdt):
+    self.rdt = rdt #RDTSocket usado para enviar os pacotes
     self.estados = {
       "estado_espera_0_cima": self.estado_espera_0_cima,
       "estado_espera_1_cima": self.estado_espera_1_cima,
@@ -8,49 +9,53 @@ class FSM_Transmissor:
     }
     self.estado_atual = "estado_espera_0_cima"
 
-  def transicao(self, evento):
-    if evento in ["recebeu_dados_0",
-                  "recebeu_dados_1",
+  def transicao(self, evento, dados=None):
+    if evento in ["rdt_send",           #camada de cima pediu envio (seq definido pelo estado)
                   "timeout",
                   "recebeu_ACK0",
-                  "recebeu_ACK1"  
+                  "recebeu_ACK1",
+                  "recebeu_corrompido"
                   ]: 
-      self.estado_atual = self.estados[self.estado_atual](evento)
+      self.estado_atual = self.estados[self.estado_atual](evento, dados)
     else:
       print(f"evento inválido: {evento}")
 
-  def estado_espera_0_cima(self, evento):
-    if evento == "recebeu_dados_0":
-      #CÓDIGO AQUI
-      self.estado_atual = "estado_espera_ACK0"
+  def estado_espera_0_cima(self, evento, dados):
+    if evento == "rdt_send":
+      #CÓDIGO AQUI: make_pkt(0, dados, checksum), udt_send, start_timer
+      return "estado_espera_ACK0"
 
-    return self.estado_atual
+    #rdt_rcv: Λ
+    return "estado_espera_0_cima"
 
-  def estado_espera_1_cima(self, evento):
-    if evento == "recebeu_dados_1":
-      #CÓDIGO AQUI
-      self.estado_atual = "estado_espera_ACK1"
+  def estado_espera_1_cima(self, evento, dados):
+    if evento == "rdt_send":
+      #CÓDIGO AQUI: make_pkt(1, dados, checksum), udt_send, start_timer
+      return "estado_espera_ACK1"
 
-    return self.estado_atual
+    #rdt_rcv: Λ
+    return "estado_espera_1_cima"
 
-  def estado_espera_ACK0(self, evento):
+  def estado_espera_ACK0(self, evento, dados):
     if evento == "timeout":
-      #CÓDIGO
-      self.estado_atual = "estado_espera_ACK0"
+      #CÓDIGO AQUI: udt_send(sndpkt), start_timer
+      return "estado_espera_ACK0"
 
-    elif evento == "recebeu_ACK0":
-      #CÓDIGO
-      self.estado_atual = "estado_espera_1_cima"
+    if evento == "recebeu_ACK0":
+      #CÓDIGO AQUI: stop_timer
+      return "estado_espera_1_cima"
 
-    return self.estado_atual
+    #corrompido ou ACK1: Λ
+    return "estado_espera_ACK0"
 
-  def estado_espera_ACK1(self, evento):
+  def estado_espera_ACK1(self, evento, dados):
     if evento == "timeout":
-      #CÓDIGO
-      self.estado_atual = "estado_espera_ACK1"
+      #CÓDIGO AQUI: udt_send(sndpkt), start_timer
+      return "estado_espera_ACK1"
 
-    elif evento == "recebeu_ACK1":
-      #CÓDIGO
-      self.estado_atual = "estado_espera_0_cima"
+    if evento == "recebeu_ACK1":
+      #CÓDIGO AQUI: stop_timer
+      return "estado_espera_0_cima"
 
-    return self.estado_atual
+    #corrompido ou ACK0: Λ
+    return "estado_espera_ACK1"

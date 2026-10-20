@@ -12,7 +12,7 @@ class FTServer:
         self.rdtServer = RDTSocket.server(serverPort) #instância de RDTSocket
 
     def receiveFile (self, path): #receber arquivos do RDTServer
-        nome = self.rdtServer.receiveBuffer()
+        nome = self.rdtServer.rdtReceive()
 
         if nome:
             print(f"(servidor) arquivo {nome} recebido")
@@ -20,10 +20,10 @@ class FTServer:
             download = path + nome.decode() #transforma de volta em txt
             fileWriter = FileWriter(download) #abre arquivo pra escrever ele localmente
 
-            buffer = self.rdtServer.receiveBuffer()
+            buffer = self.rdtServer.rdtReceive()
             while buffer:
                 fileWriter.write_buffer(buffer)
-                buffer = self.rdtServer.receiveBuffer() #recebe buffer do rdtServer
+                buffer = self.rdtServer.rdtReceive() #recebe buffer do rdtServer
 
             print("(servidor) armazenou o arquivo recebido.")
             return download
@@ -34,10 +34,10 @@ class FTServer:
         #lê arquivo (em segmentos) q vai mandar
         buffer = fileReader.read_buffer()
         while buffer is not None:
-            self.rdtServer.sendBuffer(buffer) #manda buffer com os dados pro rdtServer
+            self.rdtServer.rdtSend(buffer) #manda buffer com os dados pro rdtServer
             buffer = fileReader.read_buffer()
         
-        self.rdtServer.sendBuffer(b"") # sinaliza fim de arquivo com pacote vazio
+        self.rdtServer.rdtSend(b"") # sinaliza fim de arquivo com pacote vazio
 
         print("(servidor) enviou o arquivo de volta.")
 
