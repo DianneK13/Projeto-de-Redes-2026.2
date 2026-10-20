@@ -6,18 +6,16 @@ class RDTSocket:
 
   TIMEOUT = 10
 
-  def __init__(self, socket):
+  def __init__(self, socket, peer=None):
     self.socket = socket
+    self.peer = peer # endereço do outro lado da comunicação
 
   @classmethod
   def client(cls, serverName, serverPort):
     # Cria socket UDP
     sock = create_socket(AF_INET, SOCK_DGRAM)
     sock.settimeout(cls.TIMEOUT)
-    client = cls(sock)
-    client.serverName = serverName
-    client.serverPort = int(serverPort)
-    return client
+    return cls(sock, (serverName, int(serverPort)))
 
   @classmethod
   def server(cls, serverPort):
@@ -26,15 +24,16 @@ class RDTSocket:
     sock.bind(('', int(serverPort)))
     return cls(sock)
 
-  def sendBuffer(self, buffer, clientAddress):
-    self.socket.sendto(buffer, (self.serverName, self.serverPort))
-  
+  def sendBuffer(self, buffer):
+    self.socket.sendto(buffer, self.peer)
+
   def receiveBuffer(self):
-    buffer, clientAddress = self.socket.recvfrom(self.BLOCK_LEN)
-    return buffer, clientAddress
+    # Servidor descobre o endereço do cliente pelo pacote recebido
+    buffer, self.peer = self.socket.recvfrom(self.BLOCK_LEN)
+    return buffer
 
   def close(self):
     self.socket.close()
-  
+
   def payload(self):
-    return self.BLOCK_LEN                                                                   
+    return self.BLOCK_LEN

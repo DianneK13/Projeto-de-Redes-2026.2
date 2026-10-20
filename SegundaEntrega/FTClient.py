@@ -1,7 +1,7 @@
 import sys
 import random
 from socket import *
-from rdt.RDTClient import *
+from rdt.RDTSocket import RDTSocket
 from util.FileReader import *
 from util.FileWriter import *
 
@@ -10,7 +10,7 @@ class FTClient:
   #os segmentos que FTClient faz são enviados para RDTClient
 
   def __init__(self, serverName, serverPort):
-    self.rdtClient = RDTClient(serverName, serverPort) #instância de RDTClient 
+    self.rdtClient = RDTSocket.client(serverName, serverPort) #instância de RDTSocket 
 
   def sendFile(self, folder, fileName): #enviar arquivos para RDTClient
     encodedFileName = fileName.encode() #transformar nome do arquivo (txt) em bytes pra poder enviar
