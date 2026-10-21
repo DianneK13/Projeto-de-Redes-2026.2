@@ -1,6 +1,5 @@
 tamanho_chunk = 1024
 
-
 def enviar(arquivo, destino, socket):
     with open(arquivo, 'rb') as output: #abro o arquivo da mensagem que vai ser transmitida
         while True: 
