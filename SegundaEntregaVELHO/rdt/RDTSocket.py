@@ -8,6 +8,8 @@ class RDTSocket:
 
   TIMEOUT = 10
 
+  TIMER = 1 # tempo até retransmitir (timeout do rdt 3.0)
+
   def __init__(self, socket, peer=None):
     self.socket = socket
     self.peer = peer # endereço do outro lado da comunicação
@@ -28,9 +30,31 @@ class RDTSocket:
     sock.bind(('', int(serverPort)))
     return cls(sock)
 
+  def udt_send(self, pacote):
+    # Usado pelas FSMs para enviar pacotes pela rede
+    self.socket.sendto(pacote, self.peer)
+
   def rdtSend(self, buffer):
-    self.socket.sendto(buffer, self.peer)
-  
+    # Evento "de cima": a FSM monta e envia o pacote
+    self.transmissor.transicao("rdt_send", buffer)
+
+    # Loop de eventos: roda até chegar o ACK esperado
+    anterior = self.socket.gettimeout()
+    self.socket.settimeout(self.TIMER)
+    while self.transmissor.estado_atual in ["estado_espera_ACK0", "estado_espera_ACK1"]:
+      try:
+        pacote, _ = self.socket.recvfrom(self.BLOCK_LEN)
+        evento = self.eventoTransmissor(pacote)
+      except TimeoutError:
+        evento = "timeout"
+      self.transmissor.transicao(evento)
+    self.socket.settimeout(anterior)
+
+  def eventoTransmissor(self, pacote):
+    # Converte o pacote recebido em "recebeu_ACK0", "recebeu_ACK1" ou "recebeu_corrompido"
+    #CÓDIGO AQUI
+    pass
+
   def rdtReceive(self):
     # Servidor descobre o endereço do cliente pelo pacote recebido
     buffer, self.peer = self.socket.recvfrom(self.BLOCK_LEN)
