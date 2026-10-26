@@ -7,12 +7,12 @@ class RDTSocket:
 
   BLOCK_LEN = 1024
 
-  TIMEOUT = 1 #em segundos
-  MAX_RETRIES = 20 #retransmissões antes de desistir do pacote
+  TIMEOUT = 0.1 #em segundos
+  MAX_RETRIES = 15 #retransmissões antes de desistir do pacote
 
   #simulação de canal não confiável (probabilidades entre 0 e 1)
-  LOSS_PROB = 0.0
-  CORRUPT_PROB = 0.0
+  LOSS_PROB = 0.1
+  CORRUPT_PROB = 0.1
 
   # cabeçalho: tipo, seq, checksum
   HEADER = struct.Struct('!BBH')
@@ -61,12 +61,16 @@ class RDTSocket:
         rcvpkt, addr = self.udtRcv()
 
       except timeout:
+        print("TIMEOUT!!!!!!!!!!!!!!")
         #se der timeout, manda dnv e reinicia o timer (a não ser q o limite de retransmissões seja atingido)
         if retries == self.MAX_RETRIES:
           return False #outro lado não responde mais
+          print("número de tentativas chegou ao limite.")
 
         retries += 1
+        print(f"retries = {retries}")
         self.udtSend(sndpkt)
+        print("retransmitindo pacote...")
         deadline = time.monotonic() + self.TIMEOUT
         continue
 
@@ -81,6 +85,7 @@ class RDTSocket:
 
       tipo, rcvseq, _ = pkt
       if tipo == self.ACK and rcvseq == seq:
+        print(f"ACK {rcvseq} chegou.")
         break #ack certo chegou (vai sair do loop e consequentemente parar o timer)
 
       ultimo = 1 if self.ctrlRcv else 0
@@ -110,15 +115,17 @@ class RDTSocket:
       if pkt is not None:
         tipo, seq, data = pkt
         if tipo == self.ACK:
-          continue #não é pro receptor receber ACK. s receber, é ACK atrasado de um envio já concluído
+          continue #não é pro receptor receber ACK. se receber, é ACK atrasado de um envio já concluído
         if seq == esperado:
           break
 
       #se chegou aqui, ou pkt é None (corrompido) ou seq != esperado (duplicado). Reenvia último ACK
       self.udtSend(self._makePkt(self.ACK, 1 - esperado))
+      print(f"reenviando último ACK ({1 - esperado})")
 
     #se chegou aqui, recebeu o pacote certo. Manda ACK dele
     self.udtSend(self._makePkt(self.ACK, esperado))
+    print(f"ACK {esperado} enviado.")
     self.ctrlRcv = not self.ctrlRcv #inverte nseq
     return data
 
