@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Arquivos gerados pelas transferências
+*/arquivos/ClientMemory/cliente_*
+*/arquivos/ServerMemory/servidor_*
