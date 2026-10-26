@@ -64,8 +64,8 @@ class RDTSocket:
         print("TIMEOUT!!!!!!!!!!!!!!")
         #se der timeout, manda dnv e reinicia o timer (a não ser q o limite de retransmissões seja atingido)
         if retries == self.MAX_RETRIES:
-          return False #outro lado não responde mais
           print("número de tentativas chegou ao limite.")
+          return False #outro lado não responde mais
 
         retries += 1
         print(f"retries = {retries}")
