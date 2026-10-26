@@ -46,6 +46,9 @@ class RDTSocket:
   def rdtSend(self, data):
     seq = 0 if self.ctrlSend else 1 #fica alternando número de seq
     sndpkt = self._makePkt(self.DATA, seq, data)
+
+    print(f"[envio] DATA seq={seq} ({len(data)} bytes)")
+
     self.udtSend(sndpkt)
     deadline = time.monotonic() + self.TIMEOUT #calcula até quando vai esperar o ack
     retries = 0
@@ -61,16 +64,14 @@ class RDTSocket:
         rcvpkt, addr = self.udtRcv()
 
       except timeout:
-        print("TIMEOUT!!!!!!!!!!!!!!")
         #se der timeout, manda dnv e reinicia o timer (a não ser q o limite de retransmissões seja atingido)
         if retries == self.MAX_RETRIES:
-          print("número de tentativas chegou ao limite.")
+          print(f"[envio] limite de {self.MAX_RETRIES} retransmissões atingido, desistindo de seq={seq}")
           return False #outro lado não responde mais
 
         retries += 1
-        print(f"retries = {retries}")
+        print(f"[envio] TIMEOUT!!!!!!!!!!!!!! seq={seq}, retransmitindo ({retries}/{self.MAX_RETRIES})")
         self.udtSend(sndpkt)
-        print("retransmitindo pacote...")
         deadline = time.monotonic() + self.TIMEOUT
         continue
 
@@ -81,11 +82,12 @@ class RDTSocket:
       #se chegou aqui é pq recebeu um pacote e agora vai extrair o conteúdo dele
       pkt = self._parse(rcvpkt)
       if pkt is None:
+        print("[envio] resposta corrompida, ignorada (aguarda timeout)")
         continue #pacote corrompido (não faz nada, só vai retransmitir se der timeout)
 
       tipo, rcvseq, _ = pkt
       if tipo == self.ACK and rcvseq == seq:
-        print(f"ACK {rcvseq} chegou.")
+        print(f"[envio] ACK {rcvseq} chegou.")
         break #ack certo chegou (vai sair do loop e consequentemente parar o timer)
 
       ultimo = 1 if self.ctrlRcv else 0
@@ -115,27 +117,37 @@ class RDTSocket:
       if pkt is not None:
         tipo, seq, data = pkt
         if tipo == self.ACK:
+          print(f"[envio] ACK {seq} atrasado, ignorado")
           continue #não é pro receptor receber ACK. se receber, é ACK atrasado de um envio já concluído
         if seq == esperado:
           break
+        print(f"[recepção] DATA seq={seq} duplicado, descartado")
+      else:
+        print("[recepção] pacote corrompido, descartado")
 
       #se chegou aqui, ou pkt é None (corrompido) ou seq != esperado (duplicado). Reenvia último ACK
       self.udtSend(self._makePkt(self.ACK, 1 - esperado))
-      print(f"reenviando último ACK ({1 - esperado})")
+      print(f"[recepção] reenviando último ACK ({1 - esperado})")
 
+    print(f"[recepção] DATA seq={esperado} entregue ({len(data)} bytes)")
     #se chegou aqui, recebeu o pacote certo. Manda ACK dele
     self.udtSend(self._makePkt(self.ACK, esperado))
-    print(f"ACK {esperado} enviado.")
+    print(f"[recepção] ACK {esperado} enviado.")
     self.ctrlRcv = not self.ctrlRcv #inverte nseq
     return data
 
   def udtSend(self, pkt):
+    nome = "DATA" if pkt[0] == self.DATA else "ACK"
+    seq = pkt[1] #lido antes de qualquer corrupção
+
     if random.random() < self.LOSS_PROB: #simular perda
+      print(f"[canal] {nome} {seq} PERDIDO")
       return #pacote perdido (retorna None)
 
     if random.random() < self.CORRUPT_PROB: #simular corrupção
       pkt = bytearray(pkt)
       pkt[random.randrange(len(pkt))] ^= 0xFF #inverte os bits de um byte
+      print(f"[canal] {nome} {seq} CORROMPIDO")
 
     self.socket.sendto(pkt, self.peer)
 
