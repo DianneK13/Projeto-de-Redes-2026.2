@@ -31,7 +31,7 @@ class FTClient:
   def receiveFile(self, fileName): #receber arquivos do rdtClient
     fileWriter = FileWriter(fileName) #instância do FileWriter para escrever o arquivo q chegou
 
-    count = 1
+    count = 0
     buffer = self.rdtClient.rdtRcv() #vai recebendo o buffer e contando pra saber quantas vezes segmentou
     while buffer:
       fileWriter.write_buffer(buffer)
