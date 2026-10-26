@@ -1,8 +1,37 @@
 import sys
+import threading
+import time
 from socket import *
 from rdt.RDTSocket import RDTSocket
 from util.FileReader import *
 from util.FileWriter import *
+from itertools import cycle
+
+
+class Spinner:
+    #animação de espera que roda em paralelo, sem interferir no rdtRcv
+
+    def __init__(self, mensagem):
+        self.mensagem = mensagem
+        self.frames = cycle(["/", "-", "\\", "|"])
+        self.parar = threading.Event()
+        self.thread = None
+
+    def _girar(self):
+        while not self.parar.is_set():
+            print(f"\r{self.mensagem}{next(self.frames)}", end="", flush=True)
+            time.sleep(0.2)
+
+    def start(self):
+        self.parar.clear()
+        self.thread = threading.Thread(target=self._girar, daemon=True)
+        self.thread.start()
+
+    def stop(self):
+        self.parar.set()
+        self.thread.join()
+        print("\r" + " " * (len(self.mensagem) + 2) + "\r", end="", flush=True) #limpa a linha
+
 
 class FTServer:
     #arquivos FT (file transfer) são responsáveis pela leitura/escrita e segmentação de arquivos
@@ -11,11 +40,14 @@ class FTServer:
         self.rdtServer = RDTSocket.server(serverPort) #instância de RDTSocket
 
     def receiveFile (self, path): #receber arquivos do RDTServer
-        nome = self.rdtServer.rdtRcv()
+        spinner = Spinner("🔴 Aguardando cliente... ")
+        spinner.start()
+        nome = self.rdtServer.rdtRcv() #fica bloqueado aqui; o spinner gira na outra thread
+        spinner.stop()
 
         if nome:
             print(f"(servidor) arquivo {nome} recebido")
-            
+
             download = path + nome.decode() #transforma de volta em txt
             fileWriter = FileWriter(download) #abre arquivo pra escrever ele localmente
 
@@ -26,6 +58,7 @@ class FTServer:
 
             print("(servidor) armazenou o arquivo recebido.")
             return download
+
 
     def sendFile(self, fileName): #enviar arquivo pro rdtServer
         fileReader = FileReader(fileName, self.rdtServer.payload()) #instância do FileReader
