@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="572" height="702" viewBox="0 0 572 702" font-family="Helvetica, Arial, sans-serif">
+<defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#f4f4f4"/><line x1="0" y1="0" x2="0" y2="8" stroke="#d6d6d6" stroke-width="3"/></pattern></defs>
+<rect width="572" height="702" fill="#ffffff"/>
+<text x="286.0" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#111">Mapa de endereçamento — 172.20.3.0/24</text>
+<text x="286.0" y="56" text-anchor="middle" font-size="13" fill="#444">Grupo 3 · VLSM da maior para a menor sub-rede · números = último octeto (172.20.3.x)</text>
+<rect x="30" y="78" width="256" height="256" fill="#deebf8" stroke="#000" stroke-width="1.5"/>
+<text x="36" y="94" font-size="13" fill="#111">0</text>
+<text x="280" y="326" text-anchor="end" font-size="13" fill="#111">63</text>
+<text x="158.0" y="184.0" text-anchor="middle" font-size="40" font-weight="bold" fill="#0066cc">/26</text>
+<text x="158.0" y="212.0" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">LAB 1 · VLAN 10</text>
+<text x="158.0" y="232.0" text-anchor="middle" font-size="12" fill="#333">35 hosts + gateway</text>
+<text x="158.0" y="249.0" text-anchor="middle" font-size="12" fill="#333">GW .1 · BC .63</text>
+<text x="158.0" y="266.0" text-anchor="middle" font-size="12" fill="#333">sobra 26 de 62</text>
+<rect x="30" y="334" width="256" height="256" fill="#f8dede" stroke="#000" stroke-width="1.5"/>
+<text x="36" y="350" font-size="13" fill="#111">64</text>
+<text x="280" y="582" text-anchor="end" font-size="13" fill="#111">127</text>
+<text x="158.0" y="440.0" text-anchor="middle" font-size="40" font-weight="bold" fill="#cc0000">/26</text>
+<text x="158.0" y="468.0" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">LAB 2 · VLAN 20</text>
+<text x="158.0" y="488.0" text-anchor="middle" font-size="12" fill="#333">30 hosts + gateway</text>
+<text x="158.0" y="505.0" text-anchor="middle" font-size="12" fill="#333">GW .65 · BC .127</text>
+<text x="158.0" y="522.0" text-anchor="middle" font-size="12" fill="#333">sobra 31 de 62</text>
+<rect x="286" y="78" width="128" height="256" fill="#def2e4" stroke="#000" stroke-width="1.5"/>
+<text x="292" y="94" font-size="13" fill="#111">128</text>
+<text x="408" y="326" text-anchor="end" font-size="13" fill="#111">159</text>
+<text x="350.0" y="184.0" text-anchor="middle" font-size="32" font-weight="bold" fill="#009933">/27</text>
+<text x="350.0" y="212.0" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">LAB 3 · VLAN 30</text>
+<text x="350.0" y="232.0" text-anchor="middle" font-size="12" fill="#333">20 hosts + gateway</text>
+<text x="350.0" y="249.0" text-anchor="middle" font-size="12" fill="#333">GW .129 · BC .159</text>
+<text x="350.0" y="266.0" text-anchor="middle" font-size="12" fill="#333">sobra 9 de 30</text>
+<rect x="414" y="78" width="128" height="256" fill="#f2e4f8" stroke="#000" stroke-width="1.5"/>
+<text x="420" y="94" font-size="13" fill="#111">160</text>
+<text x="536" y="326" text-anchor="end" font-size="13" fill="#111">191</text>
+<text x="478.0" y="184.0" text-anchor="middle" font-size="32" font-weight="bold" fill="#9933cc">/27</text>
+<text x="478.0" y="212.0" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">LAB 4 · VLAN 40</text>
+<text x="478.0" y="232.0" text-anchor="middle" font-size="12" fill="#333">20 hosts + gateway</text>
+<text x="478.0" y="249.0" text-anchor="middle" font-size="12" fill="#333">GW .161 · BC .191</text>
+<text x="478.0" y="266.0" text-anchor="middle" font-size="12" fill="#333">sobra 9 de 30</text>
+<rect x="286" y="334" width="128" height="256" fill="#fcedde" stroke="#000" stroke-width="1.5"/>
+<text x="292" y="350" font-size="13" fill="#111">192</text>
+<text x="408" y="582" text-anchor="end" font-size="13" fill="#111">223</text>
+<text x="350.0" y="440.0" text-anchor="middle" font-size="32" font-weight="bold" fill="#e67800">/27</text>
+<text x="350.0" y="468.0" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">LAB 5 · VLAN 50</text>
+<text x="350.0" y="488.0" text-anchor="middle" font-size="12" fill="#333">15 hosts + gateway</text>
+<text x="350.0" y="505.0" text-anchor="middle" font-size="12" fill="#333">GW .193 · BC .223</text>
+<text x="350.0" y="522.0" text-anchor="middle" font-size="12" fill="#333">sobra 14 de 30</text>
+<rect x="414" y="334" width="128" height="256" fill="url(#hatch)" stroke="#000" stroke-width="1.5"/>
+<text x="420" y="350" font-size="13" fill="#111">224</text>
+<text x="536" y="582" text-anchor="end" font-size="13" fill="#111">255</text>
+<text x="478.0" y="456.0" text-anchor="middle" font-size="30" font-weight="bold" fill="#777">/27</text>
+<text x="478.0" y="482.0" text-anchor="middle" font-size="14" font-weight="bold" fill="#666">LIVRE</text>
+<text x="478.0" y="500.0" text-anchor="middle" font-size="12" fill="#666">reserva p/ expansão</text>
+<text x="30" y="616" font-size="12" fill="#333">GW = gateway (subinterface Gi0/1.VLAN do R-CIN) · BC = broadcast</text>
+<text x="30" y="676" font-size="12" fill="#333">Sobra = endereços utilizáveis da sub-rede que ficam sem uso</text>
+<text x="30" y="636" font-size="12" fill="#333">Alocado: 224 de 256 endereços (87,5%) · Livre: 172.20.3.224/27 (32 endereços)</text>
+<text x="30" y="656" font-size="12" fill="#333">Necessários = hosts + 1 gateway → Lab 2 (30+1 = 31) não cabe em /27 (30 utilizáveis) e usa /26</text>
+</svg>
