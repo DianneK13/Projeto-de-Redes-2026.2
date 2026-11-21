@@ -1,0 +1,41 @@
+enable
+configure terminal
+vlan 10
+ name LAB1
+vlan 20
+ name LAB2
+vlan 30
+ name LAB3
+vlan 40
+ name LAB4
+vlan 50
+ name LAB5
+exit
+interface range FastEthernet0/1 - 6, GigabitEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40,50
+exit
+interface GigabitEthernet0/1
+ description TRUNK_R-CIN_Gi0/1
+exit
+interface FastEthernet0/1
+ description TRUNK_SW-ACC1_Gi0/1
+exit
+interface FastEthernet0/2
+ description TRUNK_SW-ACC2_Gi0/1
+exit
+interface FastEthernet0/3
+ description TRUNK_SW-ACC3_Gi0/1
+exit
+interface FastEthernet0/4
+ description TRUNK_SW-ACC4_Gi0/1
+exit
+interface FastEthernet0/5
+ description TRUNK_SW-ACC5_Gi0/1
+exit
+interface FastEthernet0/6
+ description TRUNK_SW-ACC6_Gi0/1
+exit
+end
+write memory

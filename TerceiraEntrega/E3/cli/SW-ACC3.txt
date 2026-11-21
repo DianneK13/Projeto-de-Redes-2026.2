@@ -1,0 +1,24 @@
+enable
+configure terminal
+vlan 10
+ name LAB1
+vlan 20
+ name LAB2
+vlan 30
+ name LAB3
+vlan 40
+ name LAB4
+vlan 50
+ name LAB5
+exit
+interface GigabitEthernet0/1
+ description TRUNK_SW-CORE_Fa0/3
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40,50
+exit
+interface range FastEthernet0/1 - 24
+ switchport mode access
+ switchport access vlan 20
+exit
+end
+write memory
